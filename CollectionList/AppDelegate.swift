@@ -10,10 +10,27 @@ import CoreData
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
+    
+    var window: UIWindow?
+    var navigationController: UINavigationController?
 
 
+    func applicationWillTerminate(_ application: UIApplication) {
+        let viewcontroller = ViewController()
+        let run: Void = viewcontroller.functionWillRunJustOnce
+        return run
+    }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        
+        window = UIWindow(frame: UIScreen.main.bounds)
+                
+            if let window = window {
+                let mainVC = ViewController()
+                navigationController = UINavigationController(rootViewController: mainVC)
+                window.rootViewController = navigationController
+                window.makeKeyAndVisible()
+                }
         // Override point for customization after application launch.
         return true
     }

@@ -1,19 +1,270 @@
-//
-//  ViewController.swift
-//  CollectionList
-//
-//  Created by Florian Cela on 9.11.20.
-//
-
 import UIKit
+import CoreData
 
-class ViewController: UIViewController {
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view.
-    }
-
-
+protocol CollectionViewCellTapButton {
+    func deleteCell(index: Int)
 }
 
+extension ViewController: CollectionViewCellTapButton{
+    
+    func deleteCell(index: Int) {
+        let personToRemove = self.persons[index]
+        
+        context.delete(personToRemove)
+        do {
+            try context.save()
+            self.collectionView.reloadData()
+        }
+        catch{
+            print("Error Deleting")
+        }
+        fetchPersons()
+    }
+}
+
+extension ViewController: EditDelegate{
+    func editPerson(editedName: String, editedLastname: String, index: Int) {
+
+        let person = self.persons[index]
+        person.emer = editedName
+        person.mbiemer = editedLastname
+        print(person)
+        
+        do {
+            try context.save()
+            self.collectionView.reloadData()
+        }
+        catch{
+            print("Error Saving")
+        }
+        fetchPersons()                
+    }
+}
+
+class ViewController: UIViewController {
+    
+    let context =  (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+
+    private var persons:[Persons] = []
+    
+    lazy var functionWillRunJustOnce: Void = {  // --> At AppDelegate
+        
+        let entity =
+                NSEntityDescription.entity(forEntityName: "Persons",
+                                           in: context)!
+        let newPerson = NSManagedObject(entity: entity,
+                                          insertInto: context)
+
+        newPerson.setValue("Default", forKey: "emer")
+        newPerson.setValue("Value", forKey: "mbiemer")
+        persons.append(newPerson as! Persons)
+    }()
+    func createP(){
+        let entity =
+                NSEntityDescription.entity(forEntityName: "Persons",
+                                           in: context)!
+        let newPerson = NSManagedObject(entity: entity,
+                                          insertInto: context)
+
+        newPerson.setValue("Default", forKey: "emer")
+        newPerson.setValue("Value", forKey: "mbiemer")
+        persons.append(newPerson as! Persons)
+    }
+    func fetchPersons(){
+        
+        do {
+            try context.save()
+            self.persons = try context.fetch(Persons.fetchRequest())
+        }
+        catch {
+            print("...Error...")
+        }
+    }
+    
+    fileprivate let collectionView: UICollectionView = {
+        let layout  = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        cv.translatesAutoresizingMaskIntoConstraints = false
+        cv.register(CustomCell.self, forCellWithReuseIdentifier: "cell")
+        return cv
+    }()
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        
+        view.addSubview(collectionView)
+        collectionView.backgroundColor = .systemYellow
+        collectionView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0).isActive = true
+        collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0).isActive = true
+        collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0).isActive = true
+        collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0).isActive = true
+        fetchPersons()
+        collectionView.delegate = self
+        collectionView.dataSource = self
+    }
+    
+}
+
+extension ViewController: AddDelegate {
+    func addPerson(name: String, lastname: String) {
+        
+        let context =  (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+        
+        let entity =
+                NSEntityDescription.entity(forEntityName: "Persons",
+                                           in: context)!
+        let newPerson = NSManagedObject(entity: entity,
+                                          insertInto: context)
+        
+        newPerson.setValue(name, forKey: "emer")
+        
+        newPerson.setValue(lastname, forKey: "mbiemer")
+        
+        do {
+            try context.save()
+            persons.append(newPerson as! Persons)
+            DispatchQueue.main.async {
+                self.collectionView.reloadData()
+            }
+        }
+        catch {
+            print("...Error...")
+        }
+    }
+}
+
+extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
+    
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        persons.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! CustomCell
+       
+        cell.circle()
+        cell.nameLabel.text = persons[indexPath.row].emer
+        cell.lastnameLabel.text = persons[indexPath.row].mbiemer
+        cell.backgroundColor = .systemGreen
+        cell.cellDelegate = self
+        cell.index = indexPath
+        
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let vc = PersonViewController()
+
+        vc.names = persons[indexPath.row].emer!
+        vc.lastnames = persons[indexPath.row].mbiemer!
+        vc.delegate = self
+        ModalPresentationViewController.names = persons[indexPath.row].emer!
+        ModalPresentationViewController.lastnames = persons[indexPath.row].mbiemer!
+        ModalPresentationViewController.editDelegate = self
+        PersonViewController.indexes = indexPath.row
+        
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: collectionView.frame.width, height: collectionView.frame.width/4)
+    }
+}
+
+class CustomCell: UICollectionViewCell{
+    
+    var cellDelegate: CollectionViewCellTapButton?
+    var index: IndexPath?
+    
+    var persons: Persons?{
+        didSet {
+            guard let pers = persons else {
+                return
+            }
+                nameLabel.text = pers.emer
+                lastnameLabel.text = pers.mbiemer
+        }
+    }
+    
+    @objc func cellDeleted(){
+    
+        guard let index = index else {return}
+        if let cellDelegate = cellDelegate {
+        cellDelegate.deleteCell(index: index.row)
+        }
+    }
+    
+    fileprivate let circleView: UIView = {
+        let circle = UIView()
+        return circle
+    }()
+    
+    func circle(){
+        circleView.layer.cornerRadius = circleView.frame.size.height / 2
+        circleView.clipsToBounds = false
+        circleView.layer.borderColor = UIColor.black.cgColor
+        circleView.layer.borderWidth = 2.0
+        circleView.backgroundColor = random
+    }
+    lazy var random = {
+        return UIColor(red: .random(in: 0...1),
+                   green: .random(in: 0...1),
+                   blue: .random(in: 0...1),
+                   alpha: 1.0)
+    }()
+    
+    fileprivate let nameLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.clipsToBounds = true
+        label.font = .boldSystemFont(ofSize: 20)
+        label.textAlignment = .left
+        return label
+        
+    }()
+    fileprivate let lastnameLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.clipsToBounds = true
+        label.font = .boldSystemFont(ofSize: 20)
+        label.textAlignment = .left
+        return label
+        
+    }()
+    fileprivate let deleteButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.clipsToBounds = true
+        let image = UIImage(named: "delete")
+        button.setImage(image, for: .normal)
+        return button
+    }()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        contentView.addSubview(nameLabel)
+        contentView.addSubview(lastnameLabel)
+        contentView.addSubview(circleView)
+        contentView.addSubview(deleteButton)
+        
+        layoutSubviews()
+        nameLabel.frame = CGRect(x: 140, y: 22, width: 150, height: 20)
+        lastnameLabel.frame = CGRect(x: 140, y: 58, width: 150, height: 20)
+        circleView.frame = CGRect(x: 60, y: 20, width: 60, height: 60)
+        deleteButton.frame = CGRect(x: 330, y: 30, width: 60, height: 50)
+        
+        nameLabel.text = persons?.emer
+        lastnameLabel.text = persons?.mbiemer
+        self.deleteButton.addTarget(self, action: #selector(cellDeleted), for: .touchUpInside)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+        
+    }
+}
