@@ -85,6 +85,11 @@ class PersonViewController: UIViewController {
         }
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        nameTextField.becomeFirstResponder()
+    }
+    
     override func viewDidLayoutSubviews() {
         labelName.frame = CGRect(x: 150, y: 125, width: 200, height: 45)
         labelLastname.frame = CGRect(x: 150, y: 165, width: 200, height: 45)

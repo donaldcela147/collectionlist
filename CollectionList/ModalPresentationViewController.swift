@@ -81,6 +81,10 @@ class ModalPresentationViewController: UIViewController, UIAdaptivePresentationC
         
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        editNameTextfield.becomeFirstResponder()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
