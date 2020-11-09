@@ -5,6 +5,14 @@ protocol AddDelegate {
     func addPerson(name : String, lastname: String)
 }
 
+extension PersonViewController: PresenterDelegate{
+    func popToPrevious() {
+        navigationController!.popViewController(animated: false)
+    }
+    
+    
+}
+
 class PersonViewController: UIViewController {
     
     var names:String = ""
@@ -34,9 +42,10 @@ class PersonViewController: UIViewController {
     }
     
     @objc func editCell(){
-        let presentViewController = ModalPresentationViewController() 
+        let presentViewController = ModalPresentationViewController()
+        presentViewController.presenterDelegate = self
         
-        navigationController?.present(presentViewController, animated: true, completion: nil)
+        present(presentViewController, animated: true, completion: nil)
     }
     
     @objc func addCell(){

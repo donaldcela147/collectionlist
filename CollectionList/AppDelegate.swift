@@ -17,7 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillTerminate(_ application: UIApplication) {
         let viewcontroller = ViewController()
-        let run: Void = viewcontroller.functionWillRunJustOnce
+        let run: Void = viewcontroller.functionWillRunJustOnce()
         return run
     }
 

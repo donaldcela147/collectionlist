@@ -47,7 +47,7 @@ class ViewController: UIViewController {
 
     private var persons:[Persons] = []
     
-    lazy var functionWillRunJustOnce: Void = {  // --> At AppDelegate
+    func functionWillRunJustOnce() -> Void  {  // --> At AppDelegate
         
         let entity =
                 NSEntityDescription.entity(forEntityName: "Persons",
@@ -58,7 +58,7 @@ class ViewController: UIViewController {
         newPerson.setValue("Default", forKey: "emer")
         newPerson.setValue("Value", forKey: "mbiemer")
         persons.append(newPerson as! Persons)
-    }()
+    }
     func createP(){
         let entity =
                 NSEntityDescription.entity(forEntityName: "Persons",

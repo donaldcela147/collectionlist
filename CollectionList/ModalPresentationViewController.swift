@@ -1,6 +1,10 @@
 import UIKit
 import CoreData
 
+protocol PresenterDelegate {
+    func popToPrevious()
+}
+
 protocol EditDelegate: class {
     func editPerson(editedName : String, editedLastname: String, index: Int)
 }
@@ -10,6 +14,7 @@ class ModalPresentationViewController: UIViewController, UIAdaptivePresentationC
     static var names:String = ""
     static var lastnames:String = ""
     static var editDelegate:EditDelegate?
+    var presenterDelegate: PresenterDelegate? = nil
     
     func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
         if editNameTextfield.text != "" || editlastNameTextfield.text != ""{
@@ -65,18 +70,15 @@ class ModalPresentationViewController: UIViewController, UIAdaptivePresentationC
         }
     }
     
-    
     @objc func cancell(){
         dismiss(animated: true, completion: nil)
     }
     
-    func goToList(){
-        let presentedVC = self.presentingViewController
+    func goToList(){        
         dismiss(animated: false) {
-            if let vc = self.navigationController?.viewControllers.filter({$0 is ViewController}).first {
-                presentedVC?.navigationController?.popToViewController(vc, animated: true)
+            self.presenterDelegate?.popToPrevious()
             }
-        }
+        
     }
     
     
