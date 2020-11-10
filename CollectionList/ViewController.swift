@@ -81,6 +81,7 @@ class ViewController: UIViewController {
         }
     }
     
+    
     fileprivate let collectionView: UICollectionView = {
         let layout  = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -95,7 +96,7 @@ class ViewController: UIViewController {
         
         
         view.addSubview(collectionView)
-        collectionView.backgroundColor = .systemYellow
+        collectionView.backgroundColor = .white
         collectionView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0).isActive = true
         collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0).isActive = true
         collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0).isActive = true
@@ -103,6 +104,10 @@ class ViewController: UIViewController {
         fetchPersons()
         collectionView.delegate = self
         collectionView.dataSource = self
+        self.title = "Persons"
+        navigationItem.backBarButtonItem = UIBarButtonItem(
+            title: "Back", style: .plain, target: nil, action: nil)
+        
     }
     
 }
@@ -149,9 +154,11 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
         cell.circle()
         cell.nameLabel.text = persons[indexPath.row].emer
         cell.lastnameLabel.text = persons[indexPath.row].mbiemer
-        cell.backgroundColor = .systemGreen
+        cell.backgroundColor = .white
         cell.cellDelegate = self
         cell.index = indexPath
+        cell.layer.borderColor = UIColor.systemGray5.cgColor
+        cell.layer.borderWidth = 1
         
         return cell
     }
@@ -171,8 +178,16 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.frame.width, height: collectionView.frame.width/4)
+        return CGSize(width: collectionView.frame.width, height: collectionView.frame.width/6)
     }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 0
+    }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 0
+    }
+    
 }
 
 class CustomCell: UICollectionViewCell{
@@ -206,8 +221,6 @@ class CustomCell: UICollectionViewCell{
     func circle(){
         circleView.layer.cornerRadius = circleView.frame.size.height / 2
         circleView.clipsToBounds = false
-        circleView.layer.borderColor = UIColor.black.cgColor
-        circleView.layer.borderWidth = 2.0
         circleView.backgroundColor = random
     }
     lazy var random = {
@@ -230,8 +243,9 @@ class CustomCell: UICollectionViewCell{
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.clipsToBounds = true
-        label.font = .boldSystemFont(ofSize: 20)
+        label.font = .boldSystemFont(ofSize: 16)
         label.textAlignment = .left
+        label.textColor = .gray
         return label
         
     }()
@@ -253,10 +267,10 @@ class CustomCell: UICollectionViewCell{
         contentView.addSubview(deleteButton)
         
         layoutSubviews()
-        nameLabel.frame = CGRect(x: 140, y: 22, width: 150, height: 20)
-        lastnameLabel.frame = CGRect(x: 140, y: 58, width: 150, height: 20)
-        circleView.frame = CGRect(x: 60, y: 20, width: 60, height: 60)
-        deleteButton.frame = CGRect(x: 330, y: 30, width: 60, height: 50)
+        nameLabel.frame = CGRect(x: 95, y: 18, width: 250, height: 20)
+        lastnameLabel.frame = CGRect(x: 95, y: 40, width: 250, height: 20)
+        circleView.frame = CGRect(x: 30, y: 13, width: 50, height: 50)
+        deleteButton.frame = CGRect(x: 370, y: 17, width: 40, height: 40)
         
         nameLabel.text = persons?.emer
         lastnameLabel.text = persons?.mbiemer
