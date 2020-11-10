@@ -5,49 +5,13 @@ protocol CollectionViewCellTapButton {
     func deleteCell(index: Int)
 }
 
-extension ViewController: CollectionViewCellTapButton{
-    
-    func deleteCell(index: Int) {
-        let personToRemove = self.persons[index]
-        
-        context.delete(personToRemove)
-        do {
-            try context.save()
-            self.collectionView.reloadData()
-        }
-        catch{
-            print("Error Deleting")
-        }
-        fetchPersons()
-    }
-}
-
-extension ViewController: EditDelegate{
-    func editPerson(editedName: String, editedLastname: String, index: Int) {
-
-        let person = self.persons[index]
-        person.emer = editedName
-        person.mbiemer = editedLastname
-        
-        do {
-            try context.save()
-            self.collectionView.reloadData()
-        }
-        catch{
-            print("Error Saving")
-        }
-        fetchPersons()                
-    }
-}
-
 class ViewController: UIViewController {
     
     let context =  (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 
     private var persons:[Persons] = []
-    
-    static var col:[UIColor] = []
-    
+    static var colours:[UIColor] = []
+        
     func createP(){
         let entity =
                 NSEntityDescription.entity(forEntityName: "Persons",
@@ -99,6 +63,41 @@ class ViewController: UIViewController {
     }
 }
 
+extension ViewController: CollectionViewCellTapButton{
+    
+    func deleteCell(index: Int) {
+        let personToRemove = self.persons[index]
+        
+        context.delete(personToRemove)
+        do {
+            try context.save()
+            self.collectionView.reloadData()
+        }
+        catch{
+            print("Error Deleting")
+        }
+        fetchPersons()
+    }
+}
+
+extension ViewController: EditDelegate{
+    func editPerson(editedName: String, editedLastname: String, index: Int) {
+
+        let person = self.persons[index]
+        person.emer = editedName
+        person.mbiemer = editedLastname
+        
+        do {
+            try context.save()
+            self.collectionView.reloadData()
+        }
+        catch{
+            print("Error Saving")
+        }
+        fetchPersons()
+    }
+}
+
 extension ViewController: AddDelegate {
     func addPerson(name: String, lastname: String) {
         
@@ -114,10 +113,11 @@ extension ViewController: AddDelegate {
         
         newPerson.setValue(lastname, forKey: "mbiemer")
         
+        
         do {
             try context.save()
             persons.append(newPerson as! Persons)
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [self] in
                 self.collectionView.reloadData()
             }
         }
@@ -154,7 +154,7 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
         
         vc.names = persons[indexPath.row].emer!
         vc.lastnames = persons[indexPath.row].mbiemer!
-        vc.colors = ViewController.col[indexPath.row]
+        vc.colors = ViewController.colours[indexPath.row]
         vc.delegate = self
         ModalPresentationViewController.names = persons[indexPath.row].emer!
         ModalPresentationViewController.lastnames = persons[indexPath.row].mbiemer!
@@ -252,7 +252,7 @@ class CustomCell: UICollectionViewCell{
         layoutSubviews()
         circleView.layer.cornerRadius = 22
         circleView.backgroundColor = random
-        ViewController.col.append(random)
+        ViewController.colours.append(random)
         nameLabel.frame = CGRect(x: 95, y: 15, width: 250, height: 20)
         lastnameLabel.frame = CGRect(x: 95, y: 36, width: 250, height: 20)
         circleView.frame = CGRect(x: 26, y: 13, width: 45, height: 45)
