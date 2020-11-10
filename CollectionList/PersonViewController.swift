@@ -56,6 +56,7 @@ class PersonViewController: UIViewController {
         editButton.alpha = 0
         nameTextField.text = ""
         lastnameTextField.text = ""
+        dotsButton.isSelected = false
         present(presentViewController, animated: true, completion: nil)
     }
     
@@ -99,8 +100,8 @@ class PersonViewController: UIViewController {
         let colorBottom = UIColor(red: 250.0/255.0, green: 110.0/255.0, blue: 10.0/255.0, alpha: 1.0).cgColor
         let gradientLayer = CAGradientLayer()
         gradientLayer.colors = [colorTop, colorBottom]
-        gradientLayer.startPoint = CGPoint(x: 0, y: 1)
-        gradientLayer.endPoint = CGPoint(x: 1, y: 0.4)
+        gradientLayer.startPoint = CGPoint(x: 0, y: 0)
+        gradientLayer.endPoint = CGPoint(x: 1, y: 0.5)
         gradientLayer.frame = self.view.bounds
         self.gradientView.layer.insertSublayer(gradientLayer, at:0)
 
@@ -142,10 +143,10 @@ class PersonViewController: UIViewController {
         }
         let selected = !loopButton.isSelected
 
-        if selected {
-            editButton.alpha = 1
-        } else {
+        if !selected {
             editButton.alpha = 0
+        } else {
+            editButton.alpha = 1
         }
 
         loopButton.isSelected = selected
