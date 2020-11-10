@@ -28,7 +28,6 @@ extension ViewController: EditDelegate{
         let person = self.persons[index]
         person.emer = editedName
         person.mbiemer = editedLastname
-        print(person)
         
         do {
             try context.save()
@@ -47,18 +46,6 @@ class ViewController: UIViewController {
 
     private var persons:[Persons] = []
     
-    func functionWillRunJustOnce() -> Void  {  // --> At AppDelegate
-        
-        let entity =
-                NSEntityDescription.entity(forEntityName: "Persons",
-                                           in: context)!
-        let newPerson = NSManagedObject(entity: entity,
-                                          insertInto: context)
-
-        newPerson.setValue("Default", forKey: "emer")
-        newPerson.setValue("Value", forKey: "mbiemer")
-        persons.append(newPerson as! Persons)
-    }
     func createP(){
         let entity =
                 NSEntityDescription.entity(forEntityName: "Persons",
@@ -105,7 +92,7 @@ class ViewController: UIViewController {
         self.title = "Persons"
         navigationItem.backBarButtonItem = UIBarButtonItem(
             title: "Back", style: .plain, target: nil, action: nil)
-//        createP()
+        createP()
         
     }
 }
@@ -148,7 +135,6 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! CustomCell
-       
         cell.circle()
         cell.nameLabel.text = persons[indexPath.row].emer
         cell.lastnameLabel.text = persons[indexPath.row].mbiemer
@@ -163,9 +149,11 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let vc = PersonViewController()
+        let cc = CustomCell()
 
         vc.names = persons[indexPath.row].emer!
         vc.lastnames = persons[indexPath.row].mbiemer!
+        vc.colors = cc.random
         vc.delegate = self
         ModalPresentationViewController.names = persons[indexPath.row].emer!
         ModalPresentationViewController.lastnames = persons[indexPath.row].mbiemer!
@@ -262,12 +250,11 @@ class CustomCell: UICollectionViewCell{
         contentView.addSubview(lastnameLabel)
         contentView.addSubview(circleView)
         contentView.addSubview(deleteButton)
-        
         layoutSubviews()
-        nameLabel.frame = CGRect(x: 95, y: 18, width: 250, height: 20)
-        lastnameLabel.frame = CGRect(x: 95, y: 40, width: 250, height: 20)
-        circleView.frame = CGRect(x: 30, y: 13, width: 50, height: 50)
-        deleteButton.frame = CGRect(x: 365, y: 17, width: 35, height: 35)
+        nameLabel.frame = CGRect(x: 95, y: 15, width: 250, height: 20)
+        lastnameLabel.frame = CGRect(x: 95, y: 36, width: 250, height: 20)
+        circleView.frame = CGRect(x: 26, y: 13, width: 45, height: 45)
+        deleteButton.frame = CGRect(x: 330, y: 17, width: 35, height: 35)
         
         nameLabel.text = persons?.emer
         lastnameLabel.text = persons?.mbiemer

@@ -70,7 +70,7 @@ class ModalPresentationViewController: UIViewController, UIAdaptivePresentationC
         }
     }
     
-    @objc func cancell(){
+    @objc func cancell(){        
         dismiss(animated: true, completion: nil)
     }
     

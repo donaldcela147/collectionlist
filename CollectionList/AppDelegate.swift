@@ -15,12 +15,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var navigationController: UINavigationController?
 
 
-    func applicationWillTerminate(_ application: UIApplication) {
-        let viewcontroller = ViewController()
-        let run: Void = viewcontroller.functionWillRunJustOnce()
-        return run
-    }
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         window = UIWindow(frame: UIScreen.main.bounds)
