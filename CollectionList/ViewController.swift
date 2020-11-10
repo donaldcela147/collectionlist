@@ -46,6 +46,8 @@ class ViewController: UIViewController {
 
     private var persons:[Persons] = []
     
+    static var col:[UIColor] = []
+    
     func createP(){
         let entity =
                 NSEntityDescription.entity(forEntityName: "Persons",
@@ -135,7 +137,7 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! CustomCell
-        cell.circle()
+        
         cell.nameLabel.text = persons[indexPath.row].emer
         cell.lastnameLabel.text = persons[indexPath.row].mbiemer
         cell.backgroundColor = .white
@@ -149,11 +151,10 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let vc = PersonViewController()
-        let cc = CustomCell()
-
+        
         vc.names = persons[indexPath.row].emer!
         vc.lastnames = persons[indexPath.row].mbiemer!
-        vc.colors = cc.random
+        vc.colors = ViewController.col[indexPath.row]
         vc.delegate = self
         ModalPresentationViewController.names = persons[indexPath.row].emer!
         ModalPresentationViewController.lastnames = persons[indexPath.row].mbiemer!
@@ -200,14 +201,11 @@ class CustomCell: UICollectionViewCell{
     
     fileprivate let circleView: UIView = {
         let circle = UIView()
+        circle.translatesAutoresizingMaskIntoConstraints = false
+        circle.clipsToBounds = true
         return circle
     }()
     
-    func circle(){
-        circleView.layer.cornerRadius = circleView.frame.size.height / 2
-        circleView.clipsToBounds = false
-        circleView.backgroundColor = random
-    }
     lazy var random = {
         return UIColor(red: .random(in: 0...1),
                    green: .random(in: 0...1),
@@ -250,7 +248,11 @@ class CustomCell: UICollectionViewCell{
         contentView.addSubview(lastnameLabel)
         contentView.addSubview(circleView)
         contentView.addSubview(deleteButton)
+        contentView.addSubview(circleView)
         layoutSubviews()
+        circleView.layer.cornerRadius = 22
+        circleView.backgroundColor = random
+        ViewController.col.append(random)
         nameLabel.frame = CGRect(x: 95, y: 15, width: 250, height: 20)
         lastnameLabel.frame = CGRect(x: 95, y: 36, width: 250, height: 20)
         circleView.frame = CGRect(x: 26, y: 13, width: 45, height: 45)

@@ -134,8 +134,8 @@ class PersonViewController: UIViewController {
         gradientView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 200)
         circleView.frame = CGRect(x: 150, y: 165, width: 70, height: 70)
         dotsButton.frame = CGRect(x: 320, y: 285, width: 30, height: 30)
-        circle()
-        
+        circleView.layer.cornerRadius = 35
+
     }
     @objc func DOT(_ sender: Any){
         guard let loopButton = sender as? UIButton else {
@@ -159,15 +159,10 @@ class PersonViewController: UIViewController {
         return view
     }()
     
-    func circle(){
-        circleView.layer.cornerRadius = circleView.frame.size.height / 2
-        circleView.clipsToBounds = true
-        circleView.translatesAutoresizingMaskIntoConstraints = false
-    }
-    
     fileprivate let circleView: UIView = {
         let circle = UIView()
-        circle.backgroundColor = .black
+        circle.clipsToBounds = true
+        circle.translatesAutoresizingMaskIntoConstraints = false
         return circle
     }()
     fileprivate let dotsButton: UIButton = {
