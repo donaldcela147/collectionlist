@@ -81,7 +81,6 @@ class ViewController: UIViewController {
         }
     }
     
-    
     fileprivate let collectionView: UICollectionView = {
         let layout  = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -93,7 +92,6 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         
         view.addSubview(collectionView)
         collectionView.backgroundColor = .white
@@ -107,9 +105,9 @@ class ViewController: UIViewController {
         self.title = "Persons"
         navigationItem.backBarButtonItem = UIBarButtonItem(
             title: "Back", style: .plain, target: nil, action: nil)
+//        createP()
         
     }
-    
 }
 
 extension ViewController: AddDelegate {
@@ -187,7 +185,6 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 0
     }
-    
 }
 
 class CustomCell: UICollectionViewCell{
@@ -253,7 +250,7 @@ class CustomCell: UICollectionViewCell{
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.clipsToBounds = true
-        let image = UIImage(named: "delete")
+        let image = UIImage(named: "thrash")
         button.setImage(image, for: .normal)
         return button
     }()
@@ -270,7 +267,7 @@ class CustomCell: UICollectionViewCell{
         nameLabel.frame = CGRect(x: 95, y: 18, width: 250, height: 20)
         lastnameLabel.frame = CGRect(x: 95, y: 40, width: 250, height: 20)
         circleView.frame = CGRect(x: 30, y: 13, width: 50, height: 50)
-        deleteButton.frame = CGRect(x: 370, y: 17, width: 40, height: 40)
+        deleteButton.frame = CGRect(x: 365, y: 17, width: 35, height: 35)
         
         nameLabel.text = persons?.emer
         lastnameLabel.text = persons?.mbiemer
