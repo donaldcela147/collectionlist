@@ -66,8 +66,8 @@ class ViewController: UIViewController {
         let newPerson = NSManagedObject(entity: entity,
                                           insertInto: context)
 
-        newPerson.setValue("Default", forKey: "emer")
-        newPerson.setValue("Value", forKey: "mbiemer")
+        newPerson.setValue("Default Value", forKey: "emer")
+        newPerson.setValue("defaultvalue@gmail.com", forKey: "mbiemer")
         persons.append(newPerson as! Persons)
     }
     func fetchPersons(){
