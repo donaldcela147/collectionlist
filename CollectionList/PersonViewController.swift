@@ -97,7 +97,7 @@ class PersonViewController: UIViewController {
     
     func setGradientBackground() {
         let colorTop =  UIColor(red: 251.0/255.0, green: 241.0/255.0, blue: 229.0/255.0, alpha: 1.0).cgColor
-        let colorBottom = UIColor(red: 250.0/255.0, green: 110.0/255.0, blue: 10.0/255.0, alpha: 1.0).cgColor
+        let colorBottom = UIColor(red: 250.0/255.0, green: 90.0/255.0, blue: 10.0/255.0, alpha: 1.0).cgColor
         let gradientLayer = CAGradientLayer()
         gradientLayer.colors = [colorTop, colorBottom]
         gradientLayer.startPoint = CGPoint(x: 0, y: 0)
@@ -107,12 +107,12 @@ class PersonViewController: UIViewController {
 
     }
     func buttonBackground() {
-        let colorTop =  UIColor(red: 251.0/255.0, green: 241.0/255.0, blue: 259.0/255.0, alpha: 1.0).cgColor
-        let colorBottom = UIColor(red: 255.0/255.0, green: 90.0/255.0, blue: 0.0/255.0, alpha: 1.0).cgColor
+        let colorTop =  UIColor(red: 251.0/255.0, green: 241.0/255.0, blue: 170.0/255.0, alpha: 1.0).cgColor
+        let colorBottom = UIColor(red: 255.0/255.0, green: 10/255.0, blue: 110.0/255.0, alpha: 1.0).cgColor
         let gradientLayer = CAGradientLayer()
         gradientLayer.colors = [colorTop, colorBottom]
         gradientLayer.startPoint = CGPoint(x: 0, y: 0)
-        gradientLayer.endPoint = CGPoint(x: 1, y: 0.5)
+        gradientLayer.endPoint = CGPoint(x: 1, y: 1)
         gradientLayer.frame = self.view.bounds
         self.addButton.layer.insertSublayer(gradientLayer, at:0)
 
@@ -129,7 +129,7 @@ class PersonViewController: UIViewController {
         errorLabel.frame = CGRect(x: 120, y: 415, width: 300, height: 40)
         nameTextField.frame = CGRect(x: 75, y: 475, width: 240, height: 40)
         lastnameTextField.frame = CGRect(x: 75, y: 530, width: 240, height: 40)
-        addButton.frame = CGRect(x: 235, y: 590, width: 80, height: 40)
+        addButton.frame = CGRect(x: 215, y: 590, width: 100, height: 40)
         editButton.frame = CGRect(x: 230, y: 315, width: 100, height: 40)
         gradientView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 200)
         circleView.frame = CGRect(x: 150, y: 165, width: 70, height: 70)
