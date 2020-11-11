@@ -2,7 +2,18 @@ import UIKit
 import CoreData
  
 protocol AddDelegate {
-    func addPerson(name : String, lastname: String)
+    func addPerson(name : String, lastname: String, color: String)
+}
+
+extension PersonViewController: UIColorPickerViewControllerDelegate{
+    func colorPickerViewControllerDidSelectColor(_ viewController: UIColorPickerViewController) {
+        selectedColor = viewController.selectedColor
+        circleColorPicker.backgroundColor = selectedColor
+    }
+    
+    func colorPickerViewControllerDidFinish(_ viewController: UIColorPickerViewController) {
+        dismiss(animated: true, completion: nil)
+    }
 }
 
 extension PersonViewController: PresenterDelegate{
@@ -13,12 +24,15 @@ extension PersonViewController: PresenterDelegate{
 
 class PersonViewController: UIViewController {
     
+    var selectedColor = UIColor.red
+    var colorPicker = UIColorPickerViewController()
+    
     var names:String = ""
     var lastnames:String = ""
     static var indexes:Int = 0
-    var colors = UIColor()
+    var colors: String = ""
     
-    var delegate:AddDelegate?
+    var adddelegate:AddDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,6 +46,10 @@ class PersonViewController: UIViewController {
         view.addSubview(gradientView)
         view.addSubview(circleView)
         view.addSubview(dotsButton)
+        view.addSubview(circleColorPicker)
+        view.addSubview(pickColor)
+        view.addSubview(errorColorLabel)
+        colorPicker.delegate = self
         
         view.backgroundColor = .white
         view.topAnchor.constraint(equalTo: view.topAnchor, constant: 0).isActive = true
@@ -41,9 +59,17 @@ class PersonViewController: UIViewController {
         
         labelName.text = names
         labelLastname.text = lastnames
-        circleView.backgroundColor = colors
+        circleView.backgroundColor = StringColor.UIColorFromString(string: colors)
+        
         
     }
+    
+    @objc func selectColor(){
+        colorPicker.supportsAlpha = true
+        colorPicker.selectedColor = selectedColor
+        present(colorPicker, animated: true)
+    }
+        
     override func viewWillAppear(_ animated: Bool) {
         setGradientBackground()
         buttonBackground()
@@ -54,6 +80,7 @@ class PersonViewController: UIViewController {
         presentViewController.presenterDelegate = self
         errorLabel.alpha = 0
         editButton.alpha = 0
+        errorColorLabel.alpha = 0
         nameTextField.text = ""
         lastnameTextField.text = ""
         dotsButton.isSelected = false
@@ -66,6 +93,9 @@ class PersonViewController: UIViewController {
         if error != nil {
             self.showError(error!)
         }
+        else if selectedColor == .red{
+            errorColorLabel.alpha = 1
+        }
         else{
             guard let nametxt = nameTextField.text else {
                 return
@@ -73,11 +103,15 @@ class PersonViewController: UIViewController {
             guard let lastnametxt = lastnameTextField.text else{
                 return
             }
+            let newColor = StringColor.StringFromUIColor(color: selectedColor)
+
+            print(StringColor.StringFromUIColor(color: selectedColor))
             DispatchQueue.main.async {[self] in
-                if delegate != nil{
-                    self.delegate!.addPerson(name: nametxt, lastname: lastnametxt)
+                if adddelegate != nil{
+                    self.adddelegate!.addPerson(name: nametxt, lastname: lastnametxt, color: newColor)
             }
         }
+            
             navigationController?.popViewController(animated: true)
         }
     }
@@ -126,16 +160,23 @@ class PersonViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         labelName.frame = CGRect(x: 85, y: 245, width: 200, height: 45)
         labelLastname.frame = CGRect(x: 85, y: 270, width: 200, height: 45)
-        errorLabel.frame = CGRect(x: 120, y: 415, width: 300, height: 40)
-        nameTextField.frame = CGRect(x: 75, y: 475, width: 240, height: 40)
-        lastnameTextField.frame = CGRect(x: 75, y: 530, width: 240, height: 40)
-        addButton.frame = CGRect(x: 215, y: 590, width: 100, height: 40)
+        errorLabel.frame = CGRect(x: 120, y: 405, width: 300, height: 40)
+        nameTextField.frame = CGRect(x: 75, y: 465, width: 240, height: 40)
+        lastnameTextField.frame = CGRect(x: 75, y: 520, width: 240, height: 40)
+        addButton.frame = CGRect(x: 235, y: 580, width: 80, height: 40)
         editButton.frame = CGRect(x: 230, y: 315, width: 100, height: 40)
         gradientView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 200)
         circleView.frame = CGRect(x: 150, y: 165, width: 70, height: 70)
         dotsButton.frame = CGRect(x: 320, y: 285, width: 30, height: 30)
+        circleColorPicker.frame = CGRect(x: 75, y: 580, width: 40, height: 40)
+        pickColor.frame = CGRect(x: 135, y: 580, width: 80, height: 40)
+        errorColorLabel.frame = CGRect(x: 120, y: 630, width: 300, height: 40)
         circleView.layer.cornerRadius = 35
-
+        circleColorPicker.layer.cornerRadius = 20
+        
+        circleColorPicker.backgroundColor = .red
+        circleView.backgroundColor = StringColor.UIColorFromString(string: colors)
+       
     }
     @objc func DOT(_ sender: Any){
         guard let loopButton = sender as? UIButton else {
@@ -165,6 +206,25 @@ class PersonViewController: UIViewController {
         circle.translatesAutoresizingMaskIntoConstraints = false
         return circle
     }()
+    fileprivate let circleColorPicker: UIView = {
+        let circle = UIView()
+        circle.clipsToBounds = true
+        circle.translatesAutoresizingMaskIntoConstraints = false
+        return circle
+    }()
+    fileprivate let pickColor: UIButton = {
+        let button = UIButton()
+       
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.clipsToBounds = true
+        button.setTitle("Color", for: .normal)
+        button.addTarget(self, action: #selector(selectColor), for: .touchUpInside)
+        button.backgroundColor = .orange
+        button.layer.cornerRadius = 10.0
+        button.setTitleColor(.white, for: .normal)
+        return button
+    }()
+    
     fileprivate let dotsButton: UIButton = {
         let button = UIButton()
         let image = UIImage(named: "dots")
@@ -185,6 +245,16 @@ class PersonViewController: UIViewController {
         label.alpha = 0
         label.textColor = .red
         return label
+    }()
+    fileprivate let errorColorLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Plese pick a color"
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.clipsToBounds = true
+        label.alpha = 0
+        label.textColor = .red
+        return label
+        
     }()
     fileprivate let labelName: UILabel = {
         let label = UILabel()

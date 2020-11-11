@@ -10,7 +10,6 @@ class ViewController: UIViewController {
     let context =  (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 
     private var persons:[Persons] = []
-    static var colours:[UIColor] = []
         
     func createP(){
         let entity =
@@ -18,9 +17,10 @@ class ViewController: UIViewController {
                                            in: context)!
         let newPerson = NSManagedObject(entity: entity,
                                           insertInto: context)
-
+        
         newPerson.setValue("Default Value", forKey: "emer")
         newPerson.setValue("defaultvalue@gmail.com", forKey: "mbiemer")
+        newPerson.setValue("[1.0, 1.0, 0.0, 1.0]", forKey: "colours")
         persons.append(newPerson as! Persons)
     }
     func fetchPersons(){
@@ -99,7 +99,8 @@ extension ViewController: EditDelegate{
 }
 
 extension ViewController: AddDelegate {
-    func addPerson(name: String, lastname: String) {
+   
+    func addPerson(name: String, lastname: String, color: String) {
         
         let context =  (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
         
@@ -110,9 +111,8 @@ extension ViewController: AddDelegate {
                                           insertInto: context)
         
         newPerson.setValue(name, forKey: "emer")
-        
         newPerson.setValue(lastname, forKey: "mbiemer")
-        
+        newPerson.setValue(color, forKey: "colours")
         
         do {
             try context.save()
@@ -140,6 +140,7 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
         
         cell.nameLabel.text = persons[indexPath.row].emer
         cell.lastnameLabel.text = persons[indexPath.row].mbiemer
+        cell.circleView.backgroundColor = StringColor.UIColorFromString(string: persons[indexPath.row].colours!)
         cell.backgroundColor = .white
         cell.cellDelegate = self
         cell.index = indexPath
@@ -154,8 +155,8 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
         
         vc.names = persons[indexPath.row].emer!
         vc.lastnames = persons[indexPath.row].mbiemer!
-        vc.colors = ViewController.colours[indexPath.row]
-        vc.delegate = self
+        vc.colors = persons[indexPath.row].colours!
+        vc.adddelegate = self
         ModalPresentationViewController.names = persons[indexPath.row].emer!
         ModalPresentationViewController.lastnames = persons[indexPath.row].mbiemer!
         ModalPresentationViewController.editDelegate = self
@@ -188,12 +189,13 @@ class CustomCell: UICollectionViewCell{
             }
                 nameLabel.text = pers.emer
                 lastnameLabel.text = pers.mbiemer
+                circleView.backgroundColor = (StringColor.UIColorFromString(string: pers.colours!))
         }
     }
     
     @objc func cellDeleted(){
     
-        guard let index = index else {return}
+        guard let index = index else { return }
         if let cellDelegate = cellDelegate {
         cellDelegate.deleteCell(index: index.row)
         }
@@ -204,13 +206,6 @@ class CustomCell: UICollectionViewCell{
         circle.translatesAutoresizingMaskIntoConstraints = false
         circle.clipsToBounds = true
         return circle
-    }()
-    
-    lazy var random = {
-        return UIColor(red: .random(in: 0...1),
-                   green: .random(in: 0...1),
-                   blue: .random(in: 0...1),
-                   alpha: 1.0)
     }()
     
     fileprivate let nameLabel: UILabel = {
@@ -251,8 +246,6 @@ class CustomCell: UICollectionViewCell{
         contentView.addSubview(circleView)
         layoutSubviews()
         circleView.layer.cornerRadius = 22
-        circleView.backgroundColor = random
-        ViewController.colours.append(random)
         nameLabel.frame = CGRect(x: 95, y: 15, width: 250, height: 20)
         lastnameLabel.frame = CGRect(x: 95, y: 36, width: 250, height: 20)
         circleView.frame = CGRect(x: 26, y: 13, width: 45, height: 45)
