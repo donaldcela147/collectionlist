@@ -10,6 +10,17 @@ extension PersonViewController: UIColorPickerViewControllerDelegate{
         selectedColor = viewController.selectedColor
         circleColorPicker.backgroundColor = selectedColor
     }
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if let firstTouch = touches.first {
+            let hitView = self.view.hitTest(firstTouch.location(in: self.view), with: event)
+
+            if hitView === colorPicker {
+                print("touch is inside")
+            } else {
+                print("touch is outside")
+            }
+        }
+    }
     
     func colorPickerViewControllerDidFinish(_ viewController: UIColorPickerViewController) {
         dismiss(animated: true, completion: nil)
@@ -26,12 +37,11 @@ class PersonViewController: UIViewController {
     
     var selectedColor = UIColor.red
     var colorPicker = UIColorPickerViewController()
-    
+    var buttoncalled = false
     var names:String = ""
     var lastnames:String = ""
     static var indexes:Int = 0
     var colors: String = ""
-    
     var adddelegate:AddDelegate?
     
     override func viewDidLoad() {
@@ -61,12 +71,12 @@ class PersonViewController: UIViewController {
         labelLastname.text = lastnames
         circleView.backgroundColor = StringColor.UIColorFromString(string: colors)
         
-        
     }
     
     @objc func selectColor(){
         colorPicker.supportsAlpha = true
         colorPicker.selectedColor = selectedColor
+        buttoncalled = true
         present(colorPicker, animated: true)
     }
         
@@ -87,13 +97,14 @@ class PersonViewController: UIViewController {
         present(presentViewController, animated: true, completion: nil)
     }
     
+    
     @objc func addCell(){
         
         let error = validateFields()
         if error != nil {
             self.showError(error!)
         }
-        else if selectedColor == .red{
+        else if buttoncalled == false{
             errorColorLabel.alpha = 1
         }
         else{
@@ -105,13 +116,11 @@ class PersonViewController: UIViewController {
             }
             let newColor = StringColor.StringFromUIColor(color: selectedColor)
 
-            print(StringColor.StringFromUIColor(color: selectedColor))
             DispatchQueue.main.async {[self] in
                 if adddelegate != nil{
                     self.adddelegate!.addPerson(name: nametxt, lastname: lastnametxt, color: newColor)
             }
         }
-            
             navigationController?.popViewController(animated: true)
         }
     }
