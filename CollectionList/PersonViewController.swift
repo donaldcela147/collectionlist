@@ -87,7 +87,6 @@ class PersonViewController: UIViewController {
         present(presentViewController, animated: true, completion: nil)
     }
     
-    
     @objc func addCell(){
         
         let error = validateFields()
@@ -98,12 +97,8 @@ class PersonViewController: UIViewController {
             errorColorLabel.alpha = 1
         }
         else{
-            guard let nametxt = nameTextField.text else {
-                return
-            }
-            guard let lastnametxt = lastnameTextField.text else{
-                return
-            }
+            guard let nametxt = nameTextField.text else { return }
+            guard let lastnametxt = lastnameTextField.text else{ return}
             let newColor = StringColor.StringFromUIColor(color: selectedColor)
 
             DispatchQueue.main.async {[self] in

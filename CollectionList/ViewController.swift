@@ -5,7 +5,11 @@ protocol CollectionViewCellTapButton {
     func deleteCell(index: Int)
 }
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, PresenterDelegate {
+    func popToPrevious() {
+        navigationController!.popViewController(animated: false)
+    }
+    
     
     let context =  (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 
@@ -20,7 +24,7 @@ class ViewController: UIViewController {
         
         newPerson.setValue("Default Value", forKey: "emer")
         newPerson.setValue("defaultvalue@gmail.com", forKey: "mbiemer")
-        newPerson.setValue("[1.0, 1.0, 0.0, 1.0]", forKey: "colours")
+        newPerson.setValue("[1.0, 1.0, 1.0, 1.0]", forKey: "colours")
         persons.append(newPerson as! Persons)
     }
     func fetchPersons(){
@@ -43,15 +47,41 @@ class ViewController: UIViewController {
         return cv
     }()
     
+    fileprivate let apiButton: UIButton = {
+        let button = UIButton()
+       
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.clipsToBounds = true
+        button.setTitle("Fetch", for: .normal)
+        button.addTarget(self, action: #selector(goToFetchList), for: .touchUpInside)
+        button.backgroundColor = .orange
+        button.layer.cornerRadius = 10.0
+        button.setTitleColor(.white, for: .normal)
+        return button
+    }()
+    
+    @objc func goToFetchList(){
+        let vc = APIViewController()
+        vc.adderDelegate = self
+        vc.presenterDelegate = self
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         view.addSubview(collectionView)
+        view.addSubview(apiButton)
+        apiButton.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 50).isActive = true
+        apiButton.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.3).isActive = true
+        apiButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 120).isActive = true
+    
         collectionView.backgroundColor = .white
         collectionView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0).isActive = true
         collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0).isActive = true
         collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0).isActive = true
         collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0).isActive = true
+        collectionView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.8).isActive = true
         fetchPersons()
         collectionView.delegate = self
         collectionView.dataSource = self
@@ -152,11 +182,12 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let vc = PersonViewController()
-        
+        let vcc = APIViewController()
         vc.names = persons[indexPath.row].emer!
         vc.lastnames = persons[indexPath.row].mbiemer!
         vc.colors = persons[indexPath.row].colours!
         vc.adddelegate = self
+        vcc.adderDelegate = self
         ModalPresentationViewController.names = persons[indexPath.row].emer!
         ModalPresentationViewController.lastnames = persons[indexPath.row].mbiemer!
         ModalPresentationViewController.editDelegate = self
@@ -192,6 +223,7 @@ class CustomCell: UICollectionViewCell{
                 circleView.backgroundColor = (StringColor.UIColorFromString(string: pers.colours!))
         }
     }
+    
     
     @objc func cellDeleted(){
     

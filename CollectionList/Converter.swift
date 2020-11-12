@@ -24,3 +24,4 @@ class StringColor{
                      alpha: CGFloat((components[3] as NSString).floatValue))
     }
 }
+
