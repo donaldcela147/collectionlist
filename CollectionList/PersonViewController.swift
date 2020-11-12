@@ -10,17 +10,6 @@ extension PersonViewController: UIColorPickerViewControllerDelegate{
         selectedColor = viewController.selectedColor
         circleColorPicker.backgroundColor = selectedColor
     }
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if let firstTouch = touches.first {
-            let hitView = self.view.hitTest(firstTouch.location(in: self.view), with: event)
-
-            if hitView === colorPicker {
-                print("touch is inside")
-            } else {
-                print("touch is outside")
-            }
-        }
-    }
     
     func colorPickerViewControllerDidFinish(_ viewController: UIColorPickerViewController) {
         dismiss(animated: true, completion: nil)
@@ -60,6 +49,7 @@ class PersonViewController: UIViewController {
         view.addSubview(pickColor)
         view.addSubview(errorColorLabel)
         colorPicker.delegate = self
+        colorPicker.isModalInPresentation = true
         
         view.backgroundColor = .white
         view.topAnchor.constraint(equalTo: view.topAnchor, constant: 0).isActive = true
