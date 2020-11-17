@@ -10,23 +10,22 @@ class ViewController: UIViewController, PresenterDelegate {
         navigationController!.popViewController(animated: false)
     }
     
-    
     let context =  (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 
     private var persons:[Persons] = []
         
-    func createP(){
-        let entity =
-                NSEntityDescription.entity(forEntityName: "Persons",
-                                           in: context)!
-        let newPerson = NSManagedObject(entity: entity,
-                                          insertInto: context)
-        
-        newPerson.setValue("Default Value", forKey: "emer")
-        newPerson.setValue("defaultvalue@gmail.com", forKey: "mbiemer")
-        newPerson.setValue("[1.0, 1.0, 1.0, 1.0]", forKey: "colours")
-        persons.append(newPerson as! Persons)
-    }
+//    func createP(){
+//        let entity =
+//                NSEntityDescription.entity(forEntityName: "Persons",
+//                                           in: context)!
+//        let newPerson = NSManagedObject(entity: entity,
+//                                          insertInto: context)
+//        
+//        newPerson.setValue("Default Value", forKey: "emer")
+//        newPerson.setValue("defaultvalue@gmail.com", forKey: "mbiemer")
+//        newPerson.setValue("[1.0, 1.0, 1.0, 1.0]", forKey: "colours")
+//        persons.append(newPerson as! Persons)
+//    }
     func fetchPersons(){
         
         do {
@@ -88,8 +87,7 @@ class ViewController: UIViewController, PresenterDelegate {
         self.title = "Persons"
         navigationItem.backBarButtonItem = UIBarButtonItem(
             title: "Back", style: .plain, target: nil, action: nil)
-        createP()
-        
+//        createP()
     }
 }
 

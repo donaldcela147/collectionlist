@@ -33,7 +33,6 @@ class ModalPresentationViewController: UIViewController, UIAdaptivePresentationC
                     self.goToList()
                 }
             }
-           
             let discardAction = UIAlertAction(title: "Discard Changes", style: .destructive) { (action) in
                 self.dismiss(animated: true, completion: nil)
             }

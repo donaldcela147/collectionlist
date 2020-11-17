@@ -10,7 +10,7 @@ import Foundation
 class ApiController{
     
     static func downloadJSON( completion: @escaping ([User]) -> ()){
-        let url = URL(string: "https://randomuser.me/api/?format=json&results=50")
+        let url = URL(string: "https://randomuser.me/api/?format=json&results=100")
         URLSession.shared.dataTask(with: url!) {(data, response, error) in
             if error == nil {
                 do {

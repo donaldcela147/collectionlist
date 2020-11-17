@@ -132,8 +132,8 @@ class PersonViewController: UIViewController {
         gradientLayer.endPoint = CGPoint(x: 1, y: 0.5)
         gradientLayer.frame = self.view.bounds
         self.gradientView.layer.insertSublayer(gradientLayer, at:0)
-
     }
+    
     func buttonBackground() {
         let colorTop =  UIColor(red: 251.0/255.0, green: 241.0/255.0, blue: 170.0/255.0, alpha: 1.0).cgColor
         let colorBottom = UIColor(red: 255.0/255.0, green: 10/255.0, blue: 110.0/255.0, alpha: 1.0).cgColor
@@ -143,7 +143,6 @@ class PersonViewController: UIViewController {
         gradientLayer.endPoint = CGPoint(x: 1, y: 1)
         gradientLayer.frame = self.view.bounds
         self.addButton.layer.insertSublayer(gradientLayer, at:0)
-
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -166,16 +165,15 @@ class PersonViewController: UIViewController {
         pickColor.frame = CGRect(x: 135, y: 580, width: 80, height: 40)
         errorColorLabel.frame = CGRect(x: 120, y: 630, width: 300, height: 40)
         circleView.layer.cornerRadius = 35
-        circleColorPicker.layer.cornerRadius = 20
-        
-        circleColorPicker.backgroundColor = .red
         circleView.backgroundColor = StringColor.UIColorFromString(string: colors)
-       
+        
+        circleColorPicker.layer.cornerRadius = 20
+        circleColorPicker.backgroundColor = .red
     }
+    
     @objc func DOT(_ sender: Any){
-        guard let loopButton = sender as? UIButton else {
-            return
-        }
+        
+        guard let loopButton = sender as? UIButton else {return}
         let selected = !loopButton.isSelected
 
         if !selected {
@@ -183,7 +181,6 @@ class PersonViewController: UIViewController {
         } else {
             editButton.alpha = 1
         }
-
         loopButton.isSelected = selected
     }
     
@@ -200,12 +197,14 @@ class PersonViewController: UIViewController {
         circle.translatesAutoresizingMaskIntoConstraints = false
         return circle
     }()
+    
     fileprivate let circleColorPicker: UIView = {
         let circle = UIView()
         circle.clipsToBounds = true
         circle.translatesAutoresizingMaskIntoConstraints = false
         return circle
     }()
+    
     fileprivate let pickColor: UIButton = {
         let button = UIButton()
        
@@ -228,7 +227,6 @@ class PersonViewController: UIViewController {
         button.clipsToBounds = true
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
-        
     }()
     
     fileprivate let errorLabel: UILabel = {
@@ -240,6 +238,7 @@ class PersonViewController: UIViewController {
         label.textColor = .red
         return label
     }()
+    
     fileprivate let errorColorLabel: UILabel = {
         let label = UILabel()
         label.text = "Plese pick a color"
@@ -248,8 +247,8 @@ class PersonViewController: UIViewController {
         label.alpha = 0
         label.textColor = .red
         return label
-        
     }()
+    
     fileprivate let labelName: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -259,6 +258,7 @@ class PersonViewController: UIViewController {
         label.font = .boldSystemFont(ofSize: 22)
         return label
     }()
+    
     fileprivate let labelLastname: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -279,9 +279,9 @@ class PersonViewController: UIViewController {
         text.layer.borderWidth = 1.0
         text.autocorrectionType = .no
         text.layer.borderColor = UIColor.black.cgColor
-        
         return text
     }()
+    
     fileprivate let lastnameTextField: UITextField = {
         let text = UITextField()
         text.translatesAutoresizingMaskIntoConstraints = false
@@ -293,9 +293,9 @@ class PersonViewController: UIViewController {
         text.layer.borderColor = UIColor.black.cgColor
         return text
     }()
+    
     fileprivate let addButton: UIButton = {
         let button = UIButton()
-       
         button.translatesAutoresizingMaskIntoConstraints = false
         button.clipsToBounds = true
         button.setTitle("Add", for: .normal)
@@ -304,6 +304,7 @@ class PersonViewController: UIViewController {
         button.setTitleColor(.white, for: .normal)
         return button
     }()
+    
     fileprivate let editButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
